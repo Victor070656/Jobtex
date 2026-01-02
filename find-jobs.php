@@ -246,10 +246,10 @@ if (!empty($_GET["cat"])) {
                             </div>
                             <div class="box-content">
                               <h4>
-                                <a href="jobs-single.html"><?= $job["company_name"] ?></a>
+                                <a href="jobs-single.php?id=<?= $job["id"] ?>"><?= $job["company_name"] ?></a>
                               </h4>
                               <h3>
-                                <a href="jobs-single.html"><?= $job["title"] ?></a>
+                                <a href="jobs-single.php?id=<?= $job["id"] ?>"><?= $job["title"] ?></a>
                                 <span class="icon-bolt"></span>
                               </h3>
                               <ul>
