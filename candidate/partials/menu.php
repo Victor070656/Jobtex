@@ -13,7 +13,7 @@ $userInfo = mysqli_fetch_assoc($fetchUser);
           <div class="sticky-area-wrap">
             <div class="header-ct-left">
               <div id="logo" class="logo">
-                <a href="../home-01.html">
+                <a href="../">
                   <img class="site-logo" src="../images/logo.png" alt="Image" />
 
                 </a>
@@ -106,7 +106,7 @@ $userInfo = mysqli_fetch_assoc($fetchUser);
         </li>
 
         <li>
-          <a href="#" class="tf-effect">
+          <a href="logout.php" class="tf-effect">
             <span class="icon-log-out dash-icon"></span>
             <span class="dash-titles">Log out</span>
           </a>

@@ -125,7 +125,7 @@ $userInfo = mysqli_fetch_assoc($fetchUser);
             </li>
 
             <li>
-                <a href="#" class="tf-effect">
+                <a href="logout.php" class="tf-effect">
                     <span class="icon-log-out dash-icon"></span>
                     <span class="dash-titles">Log out</span>
                 </a>

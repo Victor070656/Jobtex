@@ -6,6 +6,22 @@ if(isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "candidate"){
 }else{
   echo "<script>location.href = '../login.php'</script>";
 }
+
+$stats = [
+  "jobs" => 0,
+  "applied" => 0
+];
+
+
+$getJobs = mysqli_query($conn, "SELECT * FROM `jobs`");
+$stats["jobs"] = $getJobs->num_rows;
+
+$getApplied = mysqli_query($conn, "SELECT * FROM `applicants` WHERE `userid` = '$userid'");
+$stats["applied"] = $getApplied->num_rows;
+
+
+
+$getAppliedJobs = mysqli_query($conn, "SELECT a.*, j.title, j.country, e.company_name, e.image FROM applicants a JOIN jobs j ON j.id = a.jobid JOIN employers e ON e.id = a.employer_id WHERE a.userid = '$userid' ORDER BY a.id DESC LIMIT 3");
 ?>
 <!DOCTYPE html>
 <!--[if IE 8 ]><html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"> <![endif]-->
@@ -52,523 +68,7 @@ if(isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "candidate"){
 <body class="dashboard show ">
   <a id="scroll-top"></a>
 
-  <!-- preloade -->
-  <!-- <div class="preload preload-container">
-    <div class="preload-logo">
-      <div class="spinner"></div>
-    </div>
-  </div> -->
-
-  <!-- <div class="menu-mobile-popup">
-    <div class="modal-menu__backdrop"></div>
-    <div class="widget-filter">
-
-
-      <div class="mobile-header">
-        <div id="logo" class="logo">
-          <a href="../home-01.html">
-            <img class="site-logo" src="../images/logo.png" alt="Image" />
-          </a>
-        </div>
-        <a class="title-button-group"><i class="icon-close"></i></a>
-
-      </div>
-
-      <div class="tf-tab">
-        <div class="menu-tab">
-          <div class="user-tag active">Menu</div>
-          <div class="user-tag">Categories</div>
-        </div>
-
-        <div class="content-tab">
-
-          <div class="header-ct-center menu-moblie">
-            <div class="nav-wrap">
-              <nav class="main-nav mobile">
-                <ul id="menu-primary-menu" class="menu">
-                  <li class="menu-item menu-item-has-children-mobile">
-                    <a class="iteam-menu">Home</a>
-                    <ul class="sub-menu-mobile">
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../home-01.html">Home Page 01 </a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../Home-02.html">Home Page 02 </a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../home-03.html">Home Page 03 </a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../home-04.html">Home Page 04 </a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../home-05.html">Home Page 05 </a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../home-06.html">Home Page 06 </a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../home-07.html">Home Page 07 </a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../home-08.html">Home Page 08 </a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../home-09.html">Home Page 09 </a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../home-10.html">Home Page 10 </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="menu-item menu-item-has-children-mobile">
-                    <a class="iteam-menu">Find jobs </a>
-                    <ul class="sub-menu-mobile">
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../find-jobs-list.html">List Layout</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../find-jobs-grid.html">Grid Layout</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../find-jobs-list-sidebar.html">List Sidebar</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../find-jobs-grid-sidebar.html">Grid Sidebar</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../find-jobs-list-sidebar-fullwidth.html">List Sidebar FullWidth</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../find-jobs-grid-sidebar-fullwidth.html">Grid Sidebar FullWidth</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../find-jobs-topmap.html">Top Map</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../find-jobs-topmap-sidebar.html">Top Map Sidebar</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../find-jobs-half-map.html">Half Map - V1</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../find-jobs-half-map2.html">Half Map - V2</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../jobs-single.html">Jobs Single - V1</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../jobs-single2.html">Jobs Single - V2</a>
-
-                      </li>
-                    </ul>
-                  </li>
-
-                  <li class="menu-item menu-item-has-children-mobile">
-                    <a class="iteam-menu">Employers</a>
-                    <ul class="sub-menu-mobile">
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../employers-list.html">List Layout</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../employers_grid.html">Grid Layout</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../employers-list-sidebar.html">List Sidebar</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../employers-grid-sidebar.html">Grid Sidebar</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../employers-grid-fullwidth.html">Grid Fullwidth</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../employers-topmap.html">Top Map</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../employers-half-map.html">Half Map</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../employers-single.html">Employers Single - V1</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../employers-single2.html">Employers Single - V2</a>
-
-                      </li>
-
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../employers-review.html">Employers Reviews</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../employers-not-pound.html">Employers Not Found</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="employer-dashboard.html">Employer Dashboard</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="menu-item menu-item-has-children-mobile">
-                    <a class="iteam-menu">Candidates</a>
-                    <ul class="sub-menu-mobile">
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../candidate.html">List Layout</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../candidate-grid.html">Grid Layout</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../candidate-list-sidebar.html">List Sidebar</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../candidate-top-map.html">Top Map</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../candidate-half-map.html">Half Map</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../candidate-no-available.html">No Available - V1</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../candidate-no-available2.html">No Available - V2</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../candidate-single.html">Candidate Single - V1</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../candidate-single2.html">Candidate Single - V2</a>
-
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../sample-cv.html">Sample CV</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../sample-cv-sidebar.html">Sample CV Sidebar</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../cv-details.html">CV Details</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="candidates-dashboard.html">Candidates Dashboard</a>
-
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="menu-item menu-item-has-children-mobile">
-                    <a class="iteam-menu">Blog</a>
-                    <ul class="sub-menu-mobile">
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../blog.html">Blog List </a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../blog-grid.html">Blog Grid</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../blog-masonry.html">Blog Masonry</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../blog-detail.html">Blog Details- V1</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../blog-detail-01.html">Blog Details- V2</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../blog-detail-side-bar.html">Blog Details Sidebar</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="menu-item menu-item-has-children-mobile">
-                    <a class="iteam-menu">Pages</a>
-                    <ul class="sub-menu-mobile">
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../about-us.html">About Us</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../accordion-page.html">FAQS</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../term-of-use.html">Terms Of Use</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../pricing.html">Pricing</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../shop.html">Shop List</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../shopping-cart.html">Shopping Cart</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../shop-details.html">Shop Single</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../checkout.html">Checkout</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../login.html">Login</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../create-account.html">Create Account</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../contact-us.html">Contact Us</a>
-                      </li>
-                      <li class="menu-item menu-item-mobile">
-                        <a href="../modal.html">Modal</a>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-
-          <div class="categories">
-            <div class="sub-categorie-mobile">
-              <ul class="pop-up">
-                <li class="categories-mobile">
-                  <a href="#"><span class="icon-categorie-1"></span>Design & Creative</a>
-                  <div class="group-menu-category-mobile">
-                    <div class="menu left">
-                      <ul>
-                        <li><a href="../find-jobs-list.html">Design & Creative</a></li>
-                        <li><a href="../find-jobs-list.html">Digital marketing</a></li>
-                        <li><a href="../find-jobs-list.html">Development & IT</a></li>
-                        <li><a href="../find-jobs-list.html">Music & Audio</a></li>
-                        <li><a href="../find-jobs-list.html">Finance & Accounting</a></li>
-                        <li><a href="../find-jobs-list.html">Programming & Tech</a></li>
-                        <li><a href="../find-jobs-list.html">video & Animation</a></li>
-                      </ul>
-                    </div>
-                    <div class="menu right">
-                      <ul>
-                        <li><a href="../jobs-single.html">Adobe Photoshop</a></li>
-                        <li><a href="../jobs-single.html">adobe XD</a></li>
-                        <li><a href="../jobs-single.html">Android Developer</a></li>
-                        <li><a href="../jobs-single.html">Figma</a></li>
-                        <li><a href="../jobs-single.html">CSS, Html</a></li>
-                        <li><a href="../jobs-single.html">BA</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </li>
-                <li class="categories-mobile">
-                  <a href="#"><span class="icon-categorie-8"></span>Digital Marketing</a>
-                  <div class="group-menu-category-mobile">
-                    <div class="menu left">
-                      <ul>
-                        <li><a href="../find-jobs-list.html">Digital marketing</a></li>
-                        <li><a href="../find-jobs-list.html">Design & Creative</a></li>
-                        <li><a href="../find-jobs-list.html">Finance & Accounting</a></li>
-                        <li><a href="../find-jobs-list.html">Development & IT</a></li>
-                        <li><a href="../find-jobs-list.html">Programming & Tech</a></li>
-                      </ul>
-                    </div>
-                    <div class="menu right">
-                      <ul>
-                        <li><a href="../jobs-single.html">adobe XD</a></li>
-                        <li><a href="../jobs-single.html">Figma</a></li>
-                        <li><a href="../jobs-single.html">BA</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </li>
-                <li class="categories-mobile">
-                  <a href="#"><span class="icon-categorie-2"></span>Development & IT</a>
-                  <div class="group-menu-category-mobile">
-                    <div class="menu left">
-                      <ul>
-                        <li><a href="../find-jobs-list.html">Design & Creative</a></li>
-                        <li><a href="../find-jobs-list.html">Development & IT</a></li>
-                        <li><a href="../find-jobs-list.html">Music & Audio</a></li>
-                        <li><a href="../find-jobs-list.html">video & Animation</a></li>
-                        <li><a href="../find-jobs-list.html">Finance & Accounting</a></li>
-                      </ul>
-                    </div>
-                    <div class="menu right">
-                      <ul>
-                        <li><a href="../jobs-single.html">adobe XD</a></li>
-                        <li><a href="../jobs-single.html">Android Developer</a></li>
-                        <li><a href="../jobs-single.html">Adobe Photoshop</a></li>
-                        <li><a href="../jobs-single.html">CSS, Html</a></li>
-                        <li><a href="../jobs-single.html">BA</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </li>
-                <li class="categories-mobile">
-                  <a href="#"><span class="icon-categorie-3"></span>Music & Audio</a>
-                  <div class="group-menu-category-mobile">
-                    <div class="menu left">
-                      <ul>
-                        <li><a href="../find-jobs-list.html">Digital marketing</a></li>
-                        <li><a href="../find-jobs-list.html">Design & Creative</a></li>
-                        <li><a href="../find-jobs-list.html">video & Animation</a></li>
-                      </ul>
-                    </div>
-                    <div class="menu right">
-                      <ul>
-                        <li><a href="../jobs-single.html">Android Developer</a></li>
-                        <li><a href="../jobs-single.html">Adobe Photoshop</a></li>
-                        <li><a href="../jobs-single.html">adobe XD</a></li>
-                        <li><a href="../jobs-single.html">Figma</a></li>
-                        <li><a href="../jobs-single.html">BA</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </li>
-                <li class="categories-mobile">
-                  <a href="#"><span class="icon-categorie-4"></span>Finance &
-                    Accounting</a>
-                  <div class="group-menu-category-mobile">
-                    <div class="menu left">
-                      <ul>
-                        <li><a href="../find-jobs-list.html">Development & IT</a></li>
-                        <li><a href="../find-jobs-list.html">Design & Creative</a></li>
-                        <li><a href="../find-jobs-list.html">Programming & Tech</a></li>
-                        <li><a href="../find-jobs-list.html">Music & Audio</a></li>
-                        <li><a href="../find-jobs-list.html">Finance & Accounting</a></li>
-                        <li><a href="../find-jobs-list.html">video & Animation</a></li>
-                      </ul>
-                    </div>
-                    <div class="menu right">
-                      <ul>
-                        <li><a href="../jobs-single.html">adobe XD</a></li>
-                        <li><a href="../jobs-single.html">Figma</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </li>
-                <li class="categories-mobile">
-                  <a href="#"><span class="icon-categorie-5"></span>Programming & Tech</a>
-                  <div class="group-menu-category-mobile">
-                    <div class="menu left">
-                      <ul>
-                        <li><a href="../find-jobs-list.html">Design & Creative</a></li>
-                        <li><a href="../find-jobs-list.html">Digital marketing</a></li>
-                        <li><a href="../find-jobs-list.html">Music & Audio</a></li>
-                        <li><a href="../find-jobs-list.html">Finance & Accounting</a></li>
-                        <li><a href="../find-jobs-list.html">Programming & Tech</a></li>
-                        <li><a href="../find-jobs-list.html">video & Animation</a></li>
-                      </ul>
-                    </div>
-                    <div class="menu right">
-                      <ul>
-                        <li><a href="../jobs-single.html">Adobe Photoshop</a></li>
-                        <li><a href="../jobs-single.html">adobe XD</a></li>
-                        <li><a href="../jobs-single.html">Figma</a></li>
-                        <li><a href="../jobs-single.html">CSS, Html</a></li>
-                        <li><a href="../jobs-single.html">BA</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </li>
-                <li class="categories-mobile">
-                  <a href="#"><span class="icon-categorie-6"></span>Video & Animation</a>
-                  <div class="group-menu-category-mobile">
-                    <div class="menu left">
-                      <ul>
-                        <li><a href="../find-jobs-list.html">Design & Creative</a></li>
-                        <li><a href="../find-jobs-list.html">Digital marketing</a></li>
-                        <li><a href="../find-jobs-list.html">Programming & Tech</a></li>
-                        <li><a href="../find-jobs-list.html">video & Animation</a></li>
-                      </ul>
-                    </div>
-                    <div class="menu right">
-                      <ul>
-                        <li><a href="../jobs-single.html">Adobe Photoshop</a></li>
-                        <li><a href="../jobs-single.html">CSS, Html</a></li>
-                        <li><a href="../jobs-single.html">BA</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </li>
-                <li class="categories-mobile">
-                  <a href="#"><span class="icon-categorie-7"></span>Writing &
-                    translation</a>
-                  <div class="group-menu-category-mobile">
-                    <div class="menu left">
-                      <ul>
-                        <li><a href="../find-jobs-list.html">Finance & Accounting</a></li>
-                        <li><a href="../find-jobs-list.html">Programming & Tech</a></li>
-                        <li><a href="../find-jobs-list.html">video & Animation</a></li>
-                      </ul>
-                    </div>
-                    <div class="menu right">
-                      <ul>
-                        <li><a href="../jobs-single.html">Figma</a></li>
-                        <li><a href="../jobs-single.html">CSS, Html</a></li>
-                        <li><a href="../jobs-single.html">BA</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-          </div>
-
-
-        </div>
-
-      </div>
-
-
-
-      <div class="header-customize-item button">
-        <a href="candidates-dashboard.html">Upload Resume</a>
-      </div>
-
-      <div class="mobile-footer">
-        <div class="icon-infor d-flex aln-center">
-          <div class="icon">
-            <span class="icon-call-calling"><span class="path1"></span><span class="path2"></span><span
-                class="path3"></span><span class="path4"></span></span>
-          </div>
-          <div class="content">
-            <p>Need help? 24/7</p>
-            <h6><a href="tel:0123456678">001-1234-88888</a></h6>
-          </div>
-        </div>
-        <div class="wd-social d-flex aln-center">
-          <ul class="list-social d-flex aln-center">
-            <li><a href="#"><i class="icon-facebook"></i></a></li>
-            <li><a href="#"><i class="icon-linkedin2"></i></a></li>
-            <li><a href="#"><i class="icon-twitter"></i></a></li>
-            <li><a href="#"><i class="icon-pinterest"></i></a></li>
-            <li><a href="#"><i class="icon-instagram1"></i></a></li>
-            <li><a href="#"><i class="icon-youtube"></i></a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-  </div> -->
-
+ 
   <?php include "partials/menu.php"; ?>
   <!-- left sidebar end -->
 
@@ -592,7 +92,7 @@ if(isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "candidate"){
           <div class="col-lg-12 col-md-12 ">
             <div class="row">
 
-              <div class="col-md-4 flex">
+              <div class="col-md-6 flex">
                 <div class="p-4 align-items-center rounded flex gap-2 bg-white w-100">
 
                   <div class="icon style1">
@@ -611,12 +111,12 @@ if(isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "candidate"){
                     </span>
                   </div>
                   <div class="content">
-                    <div class="display-6">15</div>
+                    <div class="display-6"><?= $stats["jobs"] ?></div>
                     <h4 class="title-count">Posted Jobs</h4>
                   </div>
                 </div>
               </div>
-              <div class="col-md-4 flex">
+              <div class="col-md-6 flex">
                 <div class="p-4 align-items-center rounded flex gap-2 bg-white w-100">
 
                   <div class="icon style2">
@@ -641,26 +141,8 @@ if(isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "candidate"){
                     </span>
                   </div>
                   <div class="content">
-                    <div class="display-6">2068</div>
-                    <h4 class="title-count">Application</h4>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4 flex">
-                <div class="p-4 align-items-center rounded flex gap-2 bg-white w-100">
-
-                  <div class="icon style3">
-                    <span class="icon-bag">
-                      <svg width="38" height="43" viewBox="0 0 38 43" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                          d="M31.0769 25.4044H21.8774C22.6365 23.1266 23.04 21.2093 23.1065 19.5746C23.2634 15.718 21.4425 14.1916 19.8873 13.5894C19.8223 13.5638 19.7546 13.5457 19.6855 13.5352C18.4805 13.3448 18.0515 13.9118 17.7672 14.5524L17.7299 14.6364C17.6883 14.7285 17.6611 14.8264 17.6493 14.9267C17.2647 18.2166 15.8599 21.3036 13.6318 23.7546V42.134C13.8804 42.225 14.1342 42.3008 14.392 42.3608C14.4618 42.3773 14.5332 42.3861 14.6049 42.3871C15.375 42.3953 16.293 42.3995 17.3517 42.3995C18.4078 42.3995 19.6035 42.3953 20.9306 42.3871H29.5972C30.1039 42.3872 30.6016 42.2527 31.0392 41.9973C31.4769 41.7419 31.8389 41.3749 32.0882 40.9337C32.3374 40.4925 32.465 39.993 32.4579 39.4863C32.4507 38.9796 32.3091 38.4839 32.0475 38.0499C32.6259 37.6118 33.0159 36.9699 33.1383 36.2546C33.2607 35.5394 33.1063 34.8043 32.7065 34.1987C33.2678 33.7227 33.6238 33.0485 33.7004 32.3165C33.7769 31.5845 33.5681 30.8512 33.1174 30.2694C33.5127 29.8675 33.7803 29.3578 33.8867 28.8042C33.9931 28.2507 33.9336 27.6781 33.7156 27.1583C33.4975 26.6385 33.1307 26.1947 32.6613 25.8827C32.1918 25.5708 31.6406 25.4045 31.0769 25.4049V25.4044ZM11.7085 8.90458C11.6502 8.72507 11.5416 8.56606 11.3956 8.44648C11.2496 8.3269 11.0723 8.25177 10.8849 8.23003L8.19749 7.92085L7.07365 5.46217C6.99554 5.2902 6.86957 5.14436 6.71079 5.04209C6.55201 4.93981 6.36713 4.88542 6.17826 4.88542C5.98939 4.88542 5.80451 4.93981 5.64573 5.04209C5.48695 5.14436 5.36098 5.2902 5.28288 5.46217L4.15903 7.92085L1.47173 8.23003C1.28425 8.25155 1.1069 8.32651 0.960823 8.44597C0.814741 8.56544 0.706076 8.72437 0.647772 8.90385C0.589467 9.08333 0.58398 9.27579 0.631963 9.45829C0.679947 9.6408 0.779379 9.80567 0.918417 9.93327L2.91033 11.7626L2.37408 14.4136C2.33704 14.5985 2.3538 14.7901 2.42237 14.9657C2.49094 15.1413 2.60845 15.2935 2.76094 15.4044C2.91344 15.5152 3.09453 15.5799 3.28272 15.5909C3.47092 15.602 3.65832 15.5587 3.8227 15.4664L6.17801 14.1366L8.53382 15.4664C8.69815 15.5592 8.88566 15.6027 9.07403 15.5919C9.26241 15.5811 9.4437 15.5164 9.59634 15.4055C9.74898 15.2946 9.86652 15.1421 9.93497 14.9663C10.0034 14.7904 10.0199 14.5986 9.98244 14.4137L9.44619 11.7627L11.4381 9.93335C11.577 9.80582 11.6763 9.64106 11.7242 9.45868C11.7722 9.2763 11.7667 9.084 11.7084 8.90466L11.7085 8.90458ZM37.3546 8.90458C37.4129 9.0839 37.4185 9.2762 37.3706 9.45858C37.3227 9.64095 37.2234 9.80572 37.0845 9.93327L35.0924 11.7626L35.6287 14.4136C35.6661 14.5986 35.6496 14.7903 35.5812 14.9662C35.5127 15.142 35.3952 15.2944 35.2426 15.4053C35.09 15.5162 34.9087 15.581 34.7203 15.5918C34.532 15.6026 34.3445 15.5591 34.1801 15.4664L31.8248 14.1365L29.4693 15.4664C29.305 15.5591 29.1175 15.6027 28.9291 15.5918C28.7408 15.581 28.5595 15.5163 28.4068 15.4054C28.2542 15.2945 28.1367 15.142 28.0682 14.9662C27.9998 14.7904 27.9833 14.5986 28.0207 14.4136L28.557 11.7626L26.5651 9.93327C26.426 9.80567 26.3266 9.6408 26.2786 9.45829C26.2306 9.27579 26.2361 9.08333 26.2944 8.90385C26.3527 8.72437 26.4614 8.56544 26.6075 8.44597C26.7536 8.32651 26.9309 8.25155 27.1184 8.23003L29.8049 7.92085L30.9292 5.46217C31.0073 5.29021 31.1332 5.14439 31.292 5.04212C31.4508 4.93984 31.6356 4.88546 31.8245 4.88546C32.0133 4.88546 32.1982 4.93984 32.3569 5.04212C32.5157 5.14439 32.6416 5.29021 32.7197 5.46217L33.8441 7.92085L36.5307 8.23003C36.7182 8.25173 36.8955 8.32684 37.0415 8.44643C37.1875 8.56602 37.2961 8.72505 37.3543 8.90458H37.3546ZM25.6275 5.21467C25.5692 5.03494 25.4606 4.87567 25.3146 4.75566C25.1686 4.63565 24.9914 4.55992 24.8037 4.53741L21.3441 4.14267L19.8966 0.972771C19.8176 0.80177 19.6913 0.656958 19.5327 0.55546C19.374 0.453963 19.1896 0.400024 19.0012 0.400024C18.8129 0.400024 18.6285 0.453963 18.4698 0.55546C18.3111 0.656958 18.1848 0.80177 18.1059 0.972771L16.6582 4.14243L13.1987 4.53717C13.0113 4.55915 12.8342 4.63442 12.6884 4.75403C12.5425 4.87365 12.434 5.0326 12.3758 5.21202C12.3175 5.39144 12.3119 5.5838 12.3597 5.76629C12.4075 5.94877 12.5067 6.11372 12.6454 6.24156L15.2102 8.5977L14.5197 12.0102C14.4823 12.1951 14.4989 12.3869 14.5674 12.5626C14.6359 12.7384 14.7534 12.8907 14.906 13.0016C15.0587 13.1124 15.2399 13.1771 15.4282 13.1879C15.6165 13.1987 15.804 13.1552 15.9683 13.0625L19.0012 11.3517L22.0341 13.0626C22.1984 13.1553 22.3858 13.1988 22.5741 13.188C22.7624 13.1772 22.9436 13.1125 23.0962 13.0017C23.2488 12.8908 23.3664 12.7385 23.4349 12.5627C23.5034 12.387 23.5199 12.1953 23.4826 12.0104L22.7922 8.59786L25.3571 6.24156C25.4959 6.11431 25.5952 5.94984 25.6432 5.76774C25.6912 5.58563 25.6858 5.39357 25.6278 5.21443L25.6275 5.21467ZM11.663 25.5825C11.4897 25.3069 11.2493 25.0797 10.9643 24.9222C10.6793 24.7647 10.3591 24.682 10.0335 24.6819H3.23887C2.7281 24.6824 2.23836 24.8854 1.87714 25.2465C1.51591 25.6077 1.3127 26.0973 1.31209 26.6081V40.4723C1.31252 40.9832 1.51563 41.4732 1.87685 41.8346C2.23807 42.196 2.7279 42.3993 3.23887 42.4H10.0335C10.359 42.3998 10.6792 42.3172 10.9641 42.1598C11.2491 42.0025 11.4895 41.7755 11.663 41.5V25.5825ZM3.80186 28.2978C3.80186 28.0367 3.90557 27.7863 4.09018 27.6017C4.27479 27.4171 4.52517 27.3134 4.78625 27.3134H5.50871C5.76979 27.3134 6.02017 27.4171 6.20478 27.6017C6.38939 27.7863 6.4931 28.0367 6.4931 28.2978C6.4931 28.5589 6.38939 28.8093 6.20478 28.9939C6.02017 29.1785 5.76979 29.2822 5.50871 29.2822H4.78633C4.65705 29.2822 4.52904 29.2568 4.4096 29.2073C4.29016 29.1578 4.18163 29.0853 4.09021 28.9939C3.99879 28.9025 3.92628 28.794 3.8768 28.6745C3.82732 28.5551 3.80186 28.4271 3.80186 28.2978Z"
-                          fill="#14A077" />
-                      </svg>
-                    </span>
-                  </div>
-                  <div class="content style3">
-                    <div class="display-6">21</div>
-                    <h4 class="title-count">Review</h4>
+                    <div class="display-6"><?= $stats["applied"] ?></div>
+                    <h4 class="title-count">Applications</h4>
                   </div>
                 </div>
               </div>
@@ -687,169 +169,57 @@ if(isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "candidate"){
                     <thead>
                       <tr>
                         <th>JObs</th>
-                        <th>Status</th>
-                        <th class="center">Date Applied</th>
-                        <th class="center">Action</th>
+                        <th class="center">date Applied</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <!-- col 1 -->
-                      <tr class="file-delete">
-                        <td>
-                          <div class="candidates-wrap flex2">
-                            <div class="images">
-                              <img src="../images/dashboard/logo-company-1.png" alt="">
-                            </div>
-                            <div class="content">
-                              <h3>UI UX Designer</h3>
-                              <div class="now-box flex2">
-                                <div class="map color-4">Diamond Trading Estates</div>
-                                <div class="days"> 2 days ago </div>
+                      <?php
+                      if (mysqli_num_rows($getAppliedJobs) > 0):
+                        $appliedJobs = mysqli_fetch_all($getAppliedJobs, MYSQLI_ASSOC);
+                        foreach ($appliedJobs as $job):
+                          ?>
+                          <!-- col 1 -->
+                          <tr class="file-delete">
+                            <td>
+                              <div class="candidates-wrap flex2">
+                                <div class="images">
+                                  <img src="../uploads/<?= $job["image"] ?>" alt="">
+                                </div>
+                                <div class="content">
+                                  <h3><?= $job["title"] ?> </h3>
+                                  <div class="now-box flex2">
+                                    <div class="map color-4"><?= $job["country"] ?></div>
+                                    <div class="briefcase flex2 color-4">
+                                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                          d="M13.334 4.66797H2.66732C1.93094 4.66797 1.33398 5.26492 1.33398 6.0013V12.668C1.33398 13.4043 1.93094 14.0013 2.66732 14.0013H13.334C14.0704 14.0013 14.6673 13.4043 14.6673 12.668V6.0013C14.6673 5.26492 14.0704 4.66797 13.334 4.66797Z"
+                                          stroke="#64666C" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path
+                                          d="M10.6673 14V3.33333C10.6673 2.97971 10.5268 2.64057 10.2768 2.39052C10.0267 2.14048 9.68761 2 9.33398 2H6.66732C6.3137 2 5.97456 2.14048 5.72451 2.39052C5.47446 2.64057 5.33398 2.97971 5.33398 3.33333V14"
+                                          stroke="#64666C" stroke-linecap="round" stroke-linejoin="round" />
+                                      </svg>
+                                      <?= $job["company_name"] ?>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="status-wrap">
-                            <div class="button-status style-bt style-2"> Seen</div>
-                          </div>
-                        </td>
-                        <td class="center">
-                          <div class="title-day color-1">December 18, 2023</div>
-                        </td>
-                        <td class="center">
-                          <div id="items_1" class="dropdown titles-dropdown">
-                            <a class="btn-selector nolink flex">
-                              <span class="more-icon"></span>
-                              <span class="more-icon"></span>
-                              <span class="more-icon"></span>
-                            </a>
-                            <ul>
-                              <li><span class="icon-eye more-ic"></span> <span>View Job</span></li>
-                              <li class="remove-file"><span class="icon-trash more-ic "></span><span>Remove Job</span>
-                              </li>
-                            </ul>
-                          </div>
-                        </td>
-                      </tr>
-                      <!-- col 2 -->
-                      <tr class="file-delete">
-                        <td>
-                          <div class="candidates-wrap flex2">
-                            <div class="images">
-                              <img src="../images/dashboard/logo-company-2.png" alt="">
-                            </div>
-                            <div class="content">
-                              <h3>Human Resource</h3>
-                              <div class="now-box flex2">
-                                <div class="map color-4">Sun West Condominiums</div>
-                                <div class="days"> 2 days ago </div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="status-wrap">
-                            <div class="button-status style-bt color-3">Responded</div>
-                          </div>
-                        </td>
-                        <td class="center">
-                          <div class="title-day color-1">December 18, 2023</div>
-                        </td>
-                        <td class="center">
-                          <div id="items_2" class="dropdown titles-dropdown">
-                            <a class="btn-selector nolink flex">
-                              <span class="more-icon"></span>
-                              <span class="more-icon"></span>
-                              <span class="more-icon"></span>
-                            </a>
-                            <ul>
-                              <li><span class="icon-eye more-ic"></span> <span>View Job</span></li>
-                              <li class="remove-file"><span class="icon-trash more-ic"></span><span>Remove Job</span>
-                              </li>
-                            </ul>
-                          </div>
-                        </td>
-                      </tr>
-                      <!-- col 3 -->
-                      <tr class="file-delete">
-                        <td>
-                          <div class="candidates-wrap flex2">
-                            <div class="images">
-                              <img src="../images/dashboard/logo-company-3.png" alt="">
-                            </div>
-                            <div class="content">
-                              <h3>Python Developer</h3>
-                              <div class="now-box flex2">
-                                <div class="map color-4">Eclipse Estates</div>
-                                <div class="days"> 2 days ago </div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="status-wrap">
-                            <div class="button-status style-bt style">Pending</div>
-                          </div>
-                        </td>
-                        <td class="center">
-                          <div class="title-day color-1">December 18, 2023</div>
-                        </td>
-                        <td class="center">
-                          <div id="items_3" class="dropdown titles-dropdown">
-                            <a class="btn-selector nolink flex">
-                              <span class="more-icon"></span>
-                              <span class="more-icon"></span>
-                              <span class="more-icon"></span>
-                            </a>
-                            <ul>
-                              <li><span class="icon-eye more-ic"></span> <span>View Job</span></li>
-                              <li class="remove-file"><span class="icon-trash more-ic"></span><span>Remove Job</span>
-                              </li>
-                            </ul>
-                          </div>
-                        </td>
-                      </tr>
-                      <!-- col 4 -->
-                      <tr class="file-delete">
-                        <td>
-                          <div class="candidates-wrap flex2">
-                            <div class="images">
-                              <img src="../images/dashboard/logo-company-4.png" alt="">
-                            </div>
-                            <div class="content">
-                              <h3>PHP Developer</h3>
-                              <div class="now-box flex2">
-                                <div class="map color-4">Southeastern Properties</div>
-                                <div class="days"> 2 days ago </div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="status-wrap">
-                            <div class="button-status style-bt color-3">Responded</div>
-                          </div>
-                        </td>
-                        <td class="center">
-                          <div class="title-day color-1">December 18, 2023</div>
-                        </td>
-                        <td class="center">
-                          <div id="items_4" class="dropdown titles-dropdown">
-                            <a class="btn-selector nolink flex">
-                              <span class="more-icon"></span>
-                              <span class="more-icon"></span>
-                              <span class="more-icon"></span>
-                            </a>
-                            <ul>
-                              <li><span class="icon-eye more-ic"></span> <span>View Job</span></li>
-                              <li class="remove-file"><span class="icon-trash more-ic"></span><span>Remove Job</span>
-                              </li>
-                            </ul>
-                          </div>
-                        </td>
-                      </tr>
+                            </td>
 
+                            <td class="center">
+                              <div class="title-day color-1"><?= date("F d, Y",strtotime($job["created_at"])) ?> </div>
+                            </td>
+                          </tr>
+                          <?php
+                        endforeach;
+                      else:
+                        ?>
+                        <tr>
+                          <td colspan="2" class="text-center p-3">No jobs found</td>
+                        </tr>
+                        <?php
+                      endif;
+                      ?>
                     </tbody>
                   </table>
                 </div>

@@ -9,9 +9,9 @@ if (isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "candidate") {
 
 if (!empty($_GET["s"])) {
   $s = $_GET["s"];
-  $getAppliedJobs = mysqli_query($conn, "SELECT a.*, j.title, j.country, e.company_name, e.image FROM applicants a JOIN jobs j ON j.id = a.jobid JOIN employers e ON e.id = a.employer_id WHERE ((j.title LIKE '%$s%') OR (j.description LIKE '%$s%') OR (j.tags LIKE '%$s%') OR (j.type LIKE '%$s%') OR (j.country LIKE '%$s%') OR (e.company_name LIKE '%$s%')) AND a.userid = '$userid'");
+  $getAppliedJobs = mysqli_query($conn, "SELECT a.*, j.title, j.country, e.company_name, e.image FROM applicants a JOIN jobs j ON j.id = a.jobid JOIN employers e ON e.id = a.employer_id WHERE ((j.title LIKE '%$s%') OR (j.description LIKE '%$s%') OR (j.tags LIKE '%$s%') OR (j.type LIKE '%$s%') OR (j.country LIKE '%$s%') OR (e.company_name LIKE '%$s%')) AND a.userid = '$userid' ORDER BY a.id DESC");
 } else {
-  $getAppliedJobs = mysqli_query($conn, "SELECT a.*, j.title, j.country, e.company_name, e.image FROM applicants a JOIN jobs j ON j.id = a.jobid JOIN employers e ON e.id = a.employer_id WHERE a.userid = '$userid'");
+  $getAppliedJobs = mysqli_query($conn, "SELECT a.*, j.title, j.country, e.company_name, e.image FROM applicants a JOIN jobs j ON j.id = a.jobid JOIN employers e ON e.id = a.employer_id WHERE a.userid = '$userid' ORDER BY a.id DESC");
 }
 
 ?>

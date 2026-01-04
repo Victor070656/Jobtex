@@ -6,6 +6,13 @@ if (isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "employer") {
 } else {
   echo "<script>location.href = '../login.php'</script>";
 }
+
+if (!empty($_GET["s"])) {
+  $s = $_GET["s"];
+  $getAppliedJobs = mysqli_query($conn, "SELECT c.*, j.title, e.company_name FROM candidates c JOIN applicants a ON a.userid = c.id JOIN jobs j ON j.id = a.jobid JOIN employers e ON e.id = a.employer_id WHERE ((c.fullname LIKE '%$s%') OR (j.title LIKE '%$s%') OR (j.description LIKE '%$s%') OR (j.tags LIKE '%$s%') OR (j.type LIKE '%$s%') OR (j.country LIKE '%$s%') OR (e.company_name LIKE '%$s%')) AND a.userid = '$userid' ORDER BY a.id DESC");
+} else {
+  $getAppliedJobs = mysqli_query($conn, "SELECT c.*, j.title, e.company_name FROM candidates c JOIN applicants a ON a.userid = c.id JOIN jobs j ON j.id = a.jobid JOIN employers e ON e.id = a.employer_id WHERE a.userid = '$userid' ORDER BY a.id DESC");
+}
 ?>
 <!DOCTYPE html>
 <!--[if IE 8 ]><html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"> <![endif]-->
@@ -14,6 +21,7 @@ if (isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "employer") {
 
 
 <!-- Mirrored from themesflat.co/html/jobtex/dashboard/employer-applicants-jobs.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 19 Nov 2025 15:38:38 GMT -->
+
 <head>
   <!-- Basic Page Needs -->
   <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
@@ -59,7 +67,7 @@ if (isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "employer") {
     </div>
   </div> -->
 
-  
+
   <?php include "partials/menu.php"; ?>
   <!-- left sidebar end -->
   <div class="dashboard__content">
@@ -84,21 +92,14 @@ if (isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "employer") {
               <div class="dash-search flex">
                 <div class="widget search">
                   <div class="search-flat">
-                    <form action="#" method="get" role="search" class="search-form">
+                    <form method="get" role="search" class="search-form">
                       <input type="search" class="search-field" placeholder="Search" value="" name="s"
                         title="Search for" required="">
                       <button class="search-icon search-submit" type="submit" title="Search"></button>
                     </form>
                   </div>
                 </div>
-                <div id="item_category2" class="dropdown titles-dropdown ">
-                  <a class="btn-selector nolink "> Sort by (Defaut)</a>
-                  <ul>
-                    <li><span>UX/UI</span></li>
-                    <li><span>Candidates</span></li>
-                    <li><span>Days</span></li>
-                  </ul>
-                </div>
+
               </div>
               <h3 class="title-appli">Recent Applicants</h3>
               <div class="table-content">
@@ -107,164 +108,46 @@ if (isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "employer") {
                     <thead>
                       <tr>
                         <th>Candidates</th>
-                        <th>Status</th>
                         <th>Applied date</th>
-                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <!-- col 1 -->
-                      <tr class="file-delete">
-                        <td>
-                          <div class="candidates-wrap flex2">
-                            <div class="images">
-                              <img src="../images/dashboard/user-1.jpg" alt="">
-                            </div>
-                            <div class="content">
-                              <h5 class="fw-6 color-3">Computational Wizard</h5>
-                              <h3>Arlene McCoy</h3>
-                              <div class="now-box flex2">
-                                <div class="button-now"><a class="#"> Available now </a></div>
-                                <div class="map color-4">Tokyo, Japan</div>
+                      <?php
+                      if (mysqli_num_rows($getAppliedJobs) > 0):
+                        $appliedJobs = mysqli_fetch_all($getAppliedJobs, MYSQLI_ASSOC);
+                        foreach ($appliedJobs as $job):
+                          ?>
+                          <!-- col 1 -->
+                          <tr class="file-delete">
+                            <td>
+                              <div class="candidates-wrap flex2">
+                                <div class="images">
+                                  <img src="../uploads/<?= $job["image"] ?>" alt="">
+                                </div>
+                                <div class="content">
+                                  <h5 class="fw-6 color-3"><?= $job["title"] ?></h5>
+                                  <h3><?= $job["fullname"] ?></h3>
+                                  <div class="now-box flex2">
+                                    <div class="button-now"><a class="#"> <?= $job["email"] ?> </a></div>
+                                    <div class="map color-4"><?= $job["country"] ?></div>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="status-wrap">
-                            <div class="button-status color-3"> Approved</div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="title-day color-1">December 18, 2023</div>
-                        </td>
-                        <td>
-                          <div class="action-wrap">
-                            <ul class="flex2">
-                              <li class="hv-tool" data-tooltip="Plus"><a class="action-icon icon-plus"></a></li>
-                              <li class="hv-tool" data-tooltip="Check"><a class="action-icon icon-check"></a></li>
-                              <li class="hv-tool" data-tooltip="Reject"><a class="action-icon icon-refect"></a></li>
-                              <li class="hv-tool" data-tooltip="Download CV"><a class="action-icon icon-download"></a>
-                              </li>
-                              <li><a class="button-cancel fw-7 remove-file">Cancel</a></li>
-                            </ul>
-                          </div>
-                        </td>
-                      </tr>
-                      <!-- col 2 -->
-                      <tr class="file-delete">
-                        <td>
-                          <div class="candidates-wrap flex2">
-                            <div class="images">
-                              <img src="../images/dashboard/user-2.jpg" alt="">
-                            </div>
-                            <div class="content">
-                              <h5 class="fw-6 color-3">Computational Wizard</h5>
-                              <h3>Mrs Dianne Russell</h3>
-                              <div class="now-box flex2">
-                                <div class="button-now"><a class="#"> Available now </a></div>
-                                <div class="map color-4">Tokyo, Japan</div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="status-wrap">
-                            <div class="button-status color-3">Approved</div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="title-day color-1">December 18, 2023</div>
-                        </td>
-                        <td>
-                          <div class="action-wrap">
-                            <ul class="flex2">
-                              <li class="hv-tool" data-tooltip="Plus"><a class="action-icon icon-plus"></a></li>
-                              <li class="hv-tool" data-tooltip="Check"><a class="action-icon icon-check"></a></li>
-                              <li class="hv-tool" data-tooltip="Reject"><a class="action-icon icon-refect"></a></li>
-                              <li class="hv-tool" data-tooltip="Download CV"><a class="action-icon icon-download"></a>
-                              </li>
-                              <li><a class="button-cancel fw-7 remove-file">Cancel</a></li>
-                            </ul>
-                          </div>
-                        </td>
-                      </tr>
-                      <!-- col 3 -->
-                      <tr class="file-delete">
-                        <td>
-                          <div class="candidates-wrap flex2">
-                            <div class="images">
-                              <img src="../images/dashboard/user-3.jpg" alt="">
-                            </div>
-                            <div class="content">
-                              <h5 class="fw-6 color-3">Computational Wizard</h5>
-                              <h3>Mr Guy Hawkins</h3>
-                              <div class="now-box flex2">
-                                <div class="button-now"><a class="#"> Available now </a></div>
-                                <div class="map color-4">Tokyo, Japan</div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="status-wrap">
-                            <div class="button-status style"> Pending </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="title-day color-1">December 18, 2023</div>
-                        </td>
-                        <td>
-                          <div class="action-wrap">
-                            <ul class="flex2">
-                              <li class="hv-tool" data-tooltip="Plus"><a class="action-icon icon-plus"></a></li>
-                              <li class="hv-tool" data-tooltip="Check"><a class="action-icon icon-check"></a></li>
-                              <li class="hv-tool" data-tooltip="Reject"><a class="action-icon icon-refect"></a></li>
-                              <li class="hv-tool" data-tooltip="Download CV"><a class="action-icon icon-download"></a>
-                              </li>
-                              <li><a class="button-cancel fw-7 remove-file">Cancel</a></li>
-                            </ul>
-                          </div>
-                        </td>
-                      </tr>
-                      <!-- col 4 -->
-                      <tr class="file-delete">
-                        <td>
-                          <div class="candidates-wrap flex2">
-                            <div class="images">
-                              <img src="../images/dashboard/user-4.jpg" alt="">
-                            </div>
-                            <div class="content">
-                              <h5 class="fw-6 color-3">Computational Wizard</h5>
-                              <h3>Lady Darlene Robertson</h3>
-                              <div class="now-box flex2">
-                                <div class="button-now"><a class="#"> Available now </a></div>
-                                <div class="map color-4">Tokyo, Japan</div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="status-wrap">
-                            <div class="button-status style"> Pending </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="title-day color-1">December 18, 2023</div>
-                        </td>
-                        <td>
-                          <div class="action-wrap">
-                            <ul class="flex2">
-                              <li class="hv-tool" data-tooltip="Plus"><a class="action-icon icon-plus"></a></li>
-                              <li class="hv-tool" data-tooltip="Check"><a class="action-icon icon-check"></a></li>
-                              <li class="hv-tool" data-tooltip="Reject"><a class="action-icon icon-refect"></a></li>
-                              <li class="hv-tool" data-tooltip="Download CV"><a class="action-icon icon-download"></a>
-                              </li>
-                              <li><a class="button-cancel fw-7 remove-file">Cancel</a></li>
-                            </ul>
-                          </div>
-                        </td>
-                      </tr>
+                            </td>
+                            <td>
+                              <div class="title-day color-1"><?= date("F d, Y", strtotime($job["created_at"])) ?></div>
+                            </td>
+                          </tr>
+                          <?php
+                        endforeach;
+                      else:
+                        ?>
+                        <tr>
+                          <td colspan="2" class="text-center p-3">No jobs found</td>
+                        </tr>
+                        <?php
+                      endif;
+                      ?>
 
                     </tbody>
                   </table>
@@ -304,4 +187,5 @@ if (isset($_SESSION["user_id"]) && $_SESSION["user_type"] == "employer") {
 
 
 <!-- Mirrored from themesflat.co/html/jobtex/dashboard/employer-applicants-jobs.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 19 Nov 2025 15:38:38 GMT -->
+
 </html>
